@@ -5,8 +5,8 @@ const dbPath = path.resolve(__dirname, "pets.db");
 
 const db = new Database(dbPath);
 
-db.serialize(() => {
-  db.prepare(`
+// cria a tabela direto (sem serialize)
+db.prepare(`
   CREATE TABLE IF NOT EXISTS pets (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nome TEXT,
@@ -17,6 +17,5 @@ db.serialize(() => {
     imagem TEXT
   )
 `).run();
-});
 
 module.exports = db;
