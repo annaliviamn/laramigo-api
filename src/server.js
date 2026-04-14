@@ -44,15 +44,12 @@ app.post("/pets", (req, res) => {
 
 // listar pets
 app.get("/pets", (req, res) => {
-  const sql = "SELECT * FROM pets";
-
-  db.all(sql, [], (err, rows) => {
-    if (err) {
-      return res.status(500).json(err.message);
-    }
-
+  try {
+    const rows = db.prepare("SELECT * FROM pets").all();
     res.json(rows);
-  });
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
 });
 
 app.listen(PORT, () => {
