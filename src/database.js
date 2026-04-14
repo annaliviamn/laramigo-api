@@ -1,10 +1,9 @@
-const sqlite3 = require("sqlite3").verbose();
-
+const Database = require("better-sqlite3");
 const path = require("path");
 
 const dbPath = path.resolve(__dirname, "pets.db");
 
-const db = new sqlite3.Database(dbPath);
+const db = new Database(dbPath);
 
 db.serialize(() => {
   db.run(`
