@@ -19,26 +19,27 @@ app.get("/", (req, res) => {
 app.post("/pets", (req, res) => {
   const { nome, idade, porte, descricao, status, imagem } = req.body;
 
-  const sql = `
-    INSERT INTO pets (nome, idade, porte, descricao, status, imagem)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `;
+  try {
+    const stmt = db.prepare(`
+      INSERT INTO pets (nome, idade, porte, descricao, status, imagem)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `);
 
-  db.run(sql, [nome, idade, porte, descricao, status, imagem], function (err) {
-    if (err) {
-      return res.status(500).json(err.message);
-    }
+    const result = stmt.run(nome, idade, porte, descricao, status, imagem);
 
     res.json({
-      id: this.lastID,
+      id: result.lastInsertRowid,
       nome,
       idade,
       porte,
       descricao,
       status,
-      imagem,
+      imagem
     });
-  });
+
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
 });
 
 // listar pets
