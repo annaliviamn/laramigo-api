@@ -4,7 +4,7 @@ const app = express();
 const cors = require("cors");
 app.use(cors());
 
-const db = require("./database");
+let pets = [];
 
 app.use(express.json());
 
@@ -19,37 +19,24 @@ app.get("/", (req, res) => {
 app.post("/pets", (req, res) => {
   const { nome, idade, porte, descricao, status, imagem } = req.body;
 
-  try {
-    const stmt = db.prepare(`
-      INSERT INTO pets (nome, idade, porte, descricao, status, imagem)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `);
+  const novoPet = {
+    id: pets.length + 1,
+    nome,
+    idade,
+    porte,
+    descricao,
+    status,
+    imagem
+  };
 
-    const result = stmt.run(nome, idade, porte, descricao, status, imagem);
+  pets.push(novoPet);
 
-    res.json({
-      id: result.lastInsertRowid,
-      nome,
-      idade,
-      porte,
-      descricao,
-      status,
-      imagem
-    });
-
-  } catch (err) {
-    res.status(500).json(err.message);
-  }
+  res.json(novoPet);
 });
 
 // listar pets
 app.get("/pets", (req, res) => {
-  try {
-    const rows = db.prepare("SELECT * FROM pets").all();
-    res.json(rows);
-  } catch (err) {
-    res.status(500).json(err.message);
-  }
+  res.json(pets);
 });
 
 app.listen(PORT, () => {
