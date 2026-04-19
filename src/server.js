@@ -4,9 +4,24 @@ const app = express();
 const cors = require("cors");
 app.use(cors());
 
-let pets = [];
-
 app.use(express.json());
+
+const mongoose = require("mongoose");
+
+// 🔥 conexão com MongoDB
+mongoose.connect("mongodb+srv://annaliviamaciel_db_user:qvHXcKPDg4KlM3lv@cluster0.mtvtvtv.mongodb.net/laramigo?retryWrites=true&w=majority")
+  .then(() => console.log("MongoDB conectado 🔥"))
+  .catch(err => console.log(err));
+
+// 🐶 modelo Pet
+const Pet = mongoose.model("Pet", {
+  nome: String,
+  idade: Number,
+  porte: String,
+  descricao: String,
+  status: String,
+  imagem: String
+});
 
 const PORT = process.env.PORT || 3000;
 
@@ -16,27 +31,24 @@ app.get("/", (req, res) => {
 });
 
 // cadastrar pet
-app.post("/pets", (req, res) => {
-  const { nome, idade, porte, descricao, status, imagem } = req.body;
-
-  const novoPet = {
-    id: pets.length + 1,
-    nome,
-    idade,
-    porte,
-    descricao,
-    status,
-    imagem
-  };
-
-  pets.push(novoPet);
-
-  res.json(novoPet);
+app.post("/pets", async (req, res) => {
+  try {
+    const pet = new Pet(req.body);
+    await pet.save();
+    res.json(pet);
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
 });
 
 // listar pets
-app.get("/pets", (req, res) => {
-  res.json(pets);
+app.get("/pets", async (req, res) => {
+  try {
+    const pets = await Pet.find();
+    res.json(pets);
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
 });
 
 app.listen(PORT, () => {
