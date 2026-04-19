@@ -9,7 +9,7 @@ app.use(express.json());
 const mongoose = require("mongoose");
 
 // 🔥 conexão com MongoDB
-mongoose.connect("mongodb+srv://annaliviamaciel_db_user:qvHXcKPDg4KlM3lv@cluster0.mtvtvtv.mongodb.net/laramigo?retryWrites=true&w=majority")
+mongoose.connect("mongodb+srv://annaliviamaciel_db_user:ngsKVDs5U2jE7hV2@cluster0.mtvtvtv.mongodb.net/laramigo?retryWrites=true&w=majority")
   .then(() => console.log("MongoDB conectado 🔥"))
   .catch(err => console.log(err));
 
